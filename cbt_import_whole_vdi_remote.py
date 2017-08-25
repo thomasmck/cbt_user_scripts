@@ -5,7 +5,7 @@ import urllib3
 import requests
 import XenAPI
 import sys
-
+from xmlrpclib import ServerProxy
 
 def import_vdi(host, session_id, vdi_uuid, file_format, import_path):
     url = ('https://%s/import_raw_vdi?session_id=%s&vdi=%s&format=%s'
@@ -19,14 +19,15 @@ def import_vdi(host, session_id, vdi_uuid, file_format, import_path):
             request.raise_for_status()
 
 def main():
-    session = XenAPI.xapi_local()
-    session.xenapi.login_with_password('root', '', '1.0', 'CBT Example')
+    host = "cl14-02.xenrt.citrite.net"
+    p = ServerProxy("http://" + host)
+    session = p.session.login_with_password("root", "xenroot", "0.1", "CBT example")['Value']
     vdi_uuid = sys.argv[1]
     path = sys.argv[2]
     try:
-        import_vdi('localhost', session._session, vdi_uuid, 'raw', path)
+        import_vdi(host, session, vdi_uuid, 'raw', path)
     finally:
-        session.xenapi.logout()
+        p.session.logout(session)
 
 
 if __name__ == "__main__":
