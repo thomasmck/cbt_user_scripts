@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import sys
-
 def write_changed_blocks_to_base_VDI(vdi_path, changed_block_path, bitmap_path, output_path):
 	bitmap = open(bitmap_path, 'r')
 	vdi = open(vdi_path, 'r+b')

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import shutil
 import urllib3
 import requests
 import XenAPI
