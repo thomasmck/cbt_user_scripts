@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eux
 #This script runs the end-to-end cbt scripts
 #example: ./execute_cbt.sh <host address> <username> <password> <vdi uuid>
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-For a given vdi and import file this script will import a VDI on to a XS host. This script will be run whenever you want to restore a VDI to a previous version.
+For a given vdi and import file this script will import a VDI on to a XS host. This script needs to be run whenever you want to restore a VDI to a previous version.
 
 example: python cbt_import_whole_vdi.py -h <host address> -u <host username> -p <host password> -v <vdi uuid> -f <import VDI filename>
 """
@@ -31,17 +31,11 @@ def main():
     parser.add_argument('-f', '--filename', dest='path')
     args = parser.parse_args()
 
-    host = args.host
-    username = args.username
-    password = args.password
-    vdi_uuid = args.vdi_uuid
-    path = args.path
-
-    session = XenAPI.Session("https://" + host, ignore_ssl=True)
-    session.login_with_password(username, password, "0.1", "CBT example")
+    session = XenAPI.Session("https://" + args.host, ignore_ssl=True)
+    session.login_with_password(args.username, args.password, "0.1", "CBT example")
 
     try:
-        import_vdi(host, session._session, vdi_uuid, 'raw', path)
+        import_vdi(args.host, session._session, args.vdi_uuid, 'raw', args.path)
     finally:
         session.xenapi.session.logout(session)
 

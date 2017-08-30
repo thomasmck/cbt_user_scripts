@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 """
-For a given VDI this script enables cbt, snapshots the VDI and exports the snapshot. This script will only need to be once when first enabling cbt backups and will be the base snapshot. After the VDI has been exported the snapshot data is destroyd to save space on the host.
+For a given VDI this script enables cbt, snapshots the VDI and exports the snapshot. This script will only need to be run once when first enabling cbt backups and will create the base snapshot. After the VDI has been exported the snapshot data is destroyed to save space on the host.
 
 example: python cbt_enable_and_snapshot.py -h <host address> -u <host username> -p <host password> -v <vdi uuid> -o <output path of VDI>
 
-Script will then print out the snapshot uuid at the end. VDI is saved to the output path specified
+Script will then print out the snapshot uuid before it returns. VDI is saved to the output path specified
 """
 
 import XenAPI
@@ -34,21 +34,15 @@ def main():
     parser.add_argument('-v', '--vdi-uuid', dest='vdi_uuid')
     parser.add_argument('-o', '--output-path', dest='output_path')
     args = parser.parse_args()
-
-    host = args.host
-    username = args.username
-    password = args.password
-    vdi_uuid = args.vdi_uuid
-    output_path = args.output_path
     
-    session = XenAPI.Session("https://" + host, ignore_ssl=True)
-    session.login_with_password(username, password, "0.1", "CBT example")
+    session = XenAPI.Session("https://" + args.host, ignore_ssl=True)
+    session.login_with_password(args.username, args.password, "0.1", "CBT example")
     
     try:
-        vdi_ref = session.xenapi.VDI.get_by_uuid(vdi_uuid)
+        vdi_ref = session.xenapi.VDI.get_by_uuid(args.vdi_uuid)
         session.xenapi.VDI.enable_cbt(vdi_ref)
         snapshot_ref = session.xenapi.VDI.snapshot(vdi_ref)
-        export_vdi(host, session._session, session.xenapi.VDI.get_uuid(snapshot_ref), 'raw', output_path)
+        export_vdi(args.host, session._session, session.xenapi.VDI.get_uuid(snapshot_ref), 'raw', args.output_path)
         # Once you are done copying the blocks, delete the snapshot data
         session.xenapi.VDI.data_destroy(snapshot_ref)
         print session.xenapi.VDI.get_uuid(snapshot_ref)

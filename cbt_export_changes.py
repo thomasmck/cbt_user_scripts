@@ -67,23 +67,15 @@ def main():
     parser.add_argument('-bo', '--bitmap-output-path', dest='bitmap_output_path') 
     args = parser.parse_args()
 
-    host = args.host
-    username = args.username
-    password = args.password
-    vdi_uuid = args.vdi_uuid
-    last_snapshot_uuid = args.snapshot_uuid
-    changed_blocks_output_path = args.changed_blocks_output_path
-    bitmap_output_path = args.bitmap_output_path
-
-    session = XenAPI.Session("https://" + host, ignore_ssl=True)
-    session.login_with_password(username, password, "0.1", "CBT example")
+    session = XenAPI.Session("https://" + args.host, ignore_ssl=True)
+    session.login_with_password(args.username, args.password, "0.1", "CBT example")
     
     try:
-        vdi_ref = session.xenapi.VDI.get_by_uuid(vdi_uuid)
-        last_snapshot_ref = session.xenapi.VDI.get_by_uuid(last_snapshot_uuid)
+        vdi_ref = session.xenapi.VDI.get_by_uuid(args.vdi_uuid)
+        last_snapshot_ref = session.xenapi.VDI.get_by_uuid(args.snapshot_uuid)
         new_snapshot_ref = session.xenapi.VDI.snapshot(vdi_ref)
         bitmap = session.xenapi.VDI.export_changed_blocks(last_snapshot_ref, new_snapshot_ref)
-        download_changed_blocks(bitmap, session.xenapi.VDI.get_nbd_info(new_snapshot_ref)[0], changed_blocks_output_path, bitmap_output_path)
+        download_changed_blocks(bitmap, session.xenapi.VDI.get_nbd_info(new_snapshot_ref)[0], args.changed_blocks_output_path, args.bitmap_output_path)
         # Once you are done copying the blocks you want you can delete the snapshot data
         session.xenapi.VDI.data_destroy(new_snapshot_ref)
         print session.xenapi.VDI.get_uuid(new_snapshot_ref)

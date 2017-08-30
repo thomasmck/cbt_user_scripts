@@ -10,6 +10,9 @@ Script will output a VDI to the output path specified.
 
 import argparse
 
+# CBT tracks 64KB blocks. Therefore each bit in the bitmap corresponds to a 64KB block on the VDI.
+changed_block_size = 64 * 1024
+
 def write_changed_blocks_to_base_VDI(vdi_path, changed_block_path, bitmap_path, output_path):
     bitmap = open(bitmap_path, 'r')
     vdi = open(vdi_path, 'r+b')
@@ -18,8 +21,6 @@ def write_changed_blocks_to_base_VDI(vdi_path, changed_block_path, bitmap_path, 
 
     try:
         bitmap_r = bitmap.read()
-        # CBT tracks 64KB blocks. Therefore each bit in the bitmap corresponds to a 64KB block on the VDI.
-        changed_block_size = 64 * 1024
         cb_offset = 0
         for x in range(0, len(bitmap_r)):
             offset = x * changed_block_size
@@ -51,7 +52,7 @@ def main():
     bitmap_path = args.bitmap
     output_path = args.output
     
-    write_changed_blocks_to_base_VDI(base_vdi_path, changed_blocks_path, bitmap_path, output_path)
+    write_changed_blocks_to_base_VDI(args.vdi_base, args.changed_blocks, args.bitmap, args.output)
 
 if __name__ == "__main__":
     main()
