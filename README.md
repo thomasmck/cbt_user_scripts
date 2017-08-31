@@ -9,9 +9,9 @@ The examples are written in python.
 This code is licensed under the BSD 3-Clause license. Please see the LICENSE file for more information
 
 # How to use these scripts
-The full list of python python packages used can be found in the requirements.txt file. Note that depending on the distro you are using some of these packages may already be installed.
+The required python packages used can be found in the requirements.txt file. Note that depending on the distro you are using some of these packages may already be installed.
 
-Note that the version of XenAPI installed via pip may not work with this script. If that is the case the latest version can be found here: https://github.com/xapi-project/xen-api/blob/master/scripts/examples/python/XenAPI.py
+For the XenAPI package use the one provided in the SDK. 
 
 The end-to-end scripts can then be run using:
 ./execute-cbt.sh \<host address> \<username> \<password> \<VDI uuid>
