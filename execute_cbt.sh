@@ -4,7 +4,7 @@ set -eux
 #example: ./execute_cbt.sh <host address> <username> <password> <vdi uuid>
 
 HOST=$1
-USER=$2
+USERNAME=$2
 PASSWORD=$3
 VDI=$4
 
